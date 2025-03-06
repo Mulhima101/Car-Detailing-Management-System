@@ -6,24 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('car_services', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id')->unique();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->string('order_id')->unique();
             $table->string('car_brand');
             $table->string('car_model');
-            $table->text('services_requested');
-            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
-            $table->dateTime('service_started_date')->nullable();
-            $table->dateTime('service_finished_date')->nullable();
+            $table->string('license_plate');
+            $table->string('color')->nullable();
+            $table->json('services');
             $table->text('notes')->nullable();
+            $table->enum('status', ['pending', 'in-progress', 'completed'])->default('pending');
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('completion_date')->nullable();
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('car_services');
     }
