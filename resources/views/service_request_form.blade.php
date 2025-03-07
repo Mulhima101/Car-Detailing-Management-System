@@ -7,6 +7,101 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/autox.css') }}" rel="stylesheet">
+    <style>
+        :root {
+            --autox-yellow: #FFCE00;
+            --autox-dark: #212529;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .header {
+            background-color: var(--autox-dark);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header .brand-yellow {
+            color: var(--autox-yellow);
+        }
+        .form-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .section-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--autox-yellow);
+            color: var(--autox-dark);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .section-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+        .service-option {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .service-option:hover {
+            border-color: var(--autox-yellow);
+        }
+        .service-option.selected {
+            border-color: var(--autox-yellow);
+            background-color: rgba(255, 206, 0, 0.1);
+        }
+        .service-option h5 {
+            margin-bottom: 5px;
+        }
+        .service-option p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        .sub-options {
+            padding-left: 20px;
+            margin-top: 10px;
+            display: none;
+        }
+        .service-option.selected .sub-options {
+            display: block;
+        }
+        .submit-btn {
+            background-color: var(--autox-yellow);
+            color: var(--autox-dark);
+            font-weight: bold;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #e6b800;
+        }
+        .footer {
+            background-color: var(--autox-dark);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
     <div class="header text-center">
@@ -64,9 +159,8 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="carBrand" class="form-label">Car Brand</label>
-                        <select class="form-select" id="carBrand" name="car_brand" required>
-                            <option value="" selected disabled>Select Brand</option>
+                        <label for="carBrand" class="form-label">Car Manufacturer</label>
+                        <select class="form-select" id="carBrand" name="car_brand" required>                            <option value="" selected disabled>Select Manufacturer</option>
                             <option value="Audi" {{ old('car_brand') == 'Audi' ? 'selected' : '' }}>Audi</option>
                             <option value="BMW" {{ old('car_brand') == 'BMW' ? 'selected' : '' }}>BMW</option>
                             <option value="Ford" {{ old('car_brand') == 'Ford' ? 'selected' : '' }}>Ford</option>
@@ -110,7 +204,7 @@
                     <div class="col-md-6 mb-3">
                         <div class="service-option">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="Full Detail" name="services[]" id="fullDetail" {{ in_array('Full Detail', old('services', [])) ? 'checked' : '' }}>
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Full Detail" name="services[]" id="fullDetail" data-has-sub="false" {{ in_array('Full Detail', old('services', [])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="fullDetail">
                                     <h5>Full Detail</h5>
                                     <p>Complete interior and exterior detailing service</p>
@@ -121,11 +215,31 @@
                     <div class="col-md-6 mb-3">
                         <div class="service-option">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="Paint Protection" name="services[]" id="paintProtection" {{ in_array('Paint Protection', old('services', [])) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="paintProtection">
-                                    <h5>Paint Protection</h5>
-                                    <p>Long-lasting protection for your vehicle's paint</p>
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Paint Correction" name="services[]" id="paintCorrection" data-has-sub="true" {{ in_array('Paint Correction', old('services', [])) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="paintCorrection">
+                                    <h5>Paint Correction</h5>
+                                    <p>Remove swirl marks, scratches and imperfections</p>
                                 </label>
+                            </div>
+                            <div class="sub-options">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paint_correction_type" id="singleStage" value="Single Stage (50-60% defects cleared)" {{ old('paint_correction_type') == 'Single Stage (50-60% defects cleared)' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="singleStage">
+                                        Single Stage (50-60% defects cleared)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paint_correction_type" id="multiStage" value="Multi-Stage (80-90% defects cleared)" {{ old('paint_correction_type') == 'Multi-Stage (80-90% defects cleared)' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="multiStage">
+                                        Multi-Stage (80-90% defects cleared)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paint_correction_type" id="restoration" value="Paint Restoration" {{ old('paint_correction_type') == 'Paint Restoration' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="restoration">
+                                        Paint Restoration
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -135,18 +249,50 @@
                     <div class="col-md-6 mb-3">
                         <div class="service-option">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="Ceramic Coating" name="services[]" id="ceramicCoating" {{ in_array('Ceramic Coating', old('services', [])) ? 'checked' : '' }}>
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Ceramic Coating" name="services[]" id="ceramicCoating" data-has-sub="true" {{ in_array('Ceramic Coating', old('services', [])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="ceramicCoating">
                                     <h5>Ceramic Coating</h5>
                                     <p>Premium coating that provides superior protection</p>
                                 </label>
+                            </div>
+                            <div class="sub-options">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ceramic_coating_type" id="detailingX" value="DetailingX" {{ old('ceramic_coating_type') == 'DetailingX' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="detailingX">
+                                        DetailingX
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ceramic_coating_type" id="csl" value="CSL" {{ old('ceramic_coating_type') == 'CSL' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="csl">
+                                        CSL
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ceramic_coating_type" id="cslBlack" value="CSL Black" {{ old('ceramic_coating_type') == 'CSL Black' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="cslBlack">
+                                        CSL Black
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ceramic_coating_type" id="csu" value="CSU" {{ old('ceramic_coating_type') == 'CSU' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="csu">
+                                        CSU
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ceramic_coating_type" id="csuBlack" value="CSU Black" {{ old('ceramic_coating_type') == 'CSU Black' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="csuBlack">
+                                        CSU Black
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="service-option">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="Interior Detail" name="services[]" id="interiorDetail" {{ in_array('Interior Detail', old('services', [])) ? 'checked' : '' }}>
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Interior Detail" name="services[]" id="interiorDetail" data-has-sub="false" {{ in_array('Interior Detail', old('services', [])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="interiorDetail">
                                     <h5>Interior Detail</h5>
                                     <p>Deep cleaning of your vehicle's interior</p>
@@ -160,7 +306,7 @@
                     <div class="col-md-6 mb-3">
                         <div class="service-option">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="Exterior Detail" name="services[]" id="exteriorDetail" {{ in_array('Exterior Detail', old('services', [])) ? 'checked' : '' }}>
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Exterior Detail" name="services[]" id="exteriorDetail" data-has-sub="false" {{ in_array('Exterior Detail', old('services', [])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exteriorDetail">
                                     <h5>Exterior Detail</h5>
                                     <p>Thorough cleaning and polishing of your vehicle's exterior</p>
@@ -171,11 +317,42 @@
                     <div class="col-md-6 mb-3">
                         <div class="service-option">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="Headlight Restoration" name="services[]" id="headlightRestoration" {{ in_array('Headlight Restoration', old('services', [])) ? 'checked' : '' }}>
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Headlight Restoration" name="services[]" id="headlightRestoration" data-has-sub="false" {{ in_array('Headlight Restoration', old('services', [])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="headlightRestoration">
                                     <h5>Headlight Restoration</h5>
                                     <p>Restore foggy or yellowed headlights</p>
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="service-option">
+                            <div class="form-check">
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Leather Treatment" name="services[]" id="leatherTreatment" data-has-sub="false" {{ in_array('Leather Treatment', old('services', [])) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="leatherTreatment">
+                                    <h5>Leather Treatment</h5>
+                                    <p>Clean, condition and protect leather surfaces</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="service-option">
+                            <div class="form-check">
+                                <input class="form-check-input service-checkbox" type="checkbox" value="Custom" name="services[]" id="customService" data-has-sub="true" {{ in_array('Custom', old('services', [])) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="customService">
+                                    <h5>Custom Service</h5>
+                                    <p>Request a custom detailing service</p>
+                                </label>
+                            </div>
+                            <div class="sub-options">
+                                <div class="form-group">
+                                    <label for="customServiceDescription">Please describe the custom service you require:</label>
+                                    <textarea class="form-control" id="customServiceDescription" name="custom_service_description" rows="3">{{ old('custom_service_description') }}</textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -207,27 +384,125 @@
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Script to highlight selected service options
-        document.querySelectorAll('.service-option').forEach(option => {
-            option.addEventListener('click', function() {
-                const checkbox = this.querySelector('input[type="checkbox"]');
-                checkbox.checked = !checkbox.checked;
-                this.classList.toggle('selected', checkbox.checked);
-            });
-        });
-
-        // When the page loads, add the 'selected' class to options with checked checkboxes
+        // Script to handle service options
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.form-check-input:checked').forEach(checkbox => {
-                checkbox.closest('.service-option').classList.add('selected');
+            // Initialize options based on previous selection
+            document.querySelectorAll('.service-checkbox').forEach(checkbox => {
+                const serviceOption = checkbox.closest('.service-option');
+                serviceOption.classList.toggle('selected', checkbox.checked);
+                
+                // Show sub-options if parent is checked and has sub-options
+                if (checkbox.checked && checkbox.dataset.hasSub === 'true') {
+                    const subOptions = serviceOption.querySelector('.sub-options');
+                    if (subOptions) {
+                        subOptions.style.display = 'block';
+                    }
+                }
             });
-        });
-
-        // Prevent double click issues on checkboxes
-        document.querySelectorAll('.form-check-input').forEach(checkbox => {
-            checkbox.addEventListener('click', function(e) {
-                e.stopPropagation();
-                this.closest('.service-option').classList.toggle('selected', this.checked);
+            
+            // Handle click on service options
+            document.querySelectorAll('.service-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on form elements inside sub-options
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || 
+                        e.target.tagName === 'LABEL' || e.target.closest('.sub-options')) {
+                        return; // Let the form elements handle their own events
+                    }
+                    
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    this.classList.toggle('selected', checkbox.checked);
+                    
+                    // Show/hide sub-options
+                    if (checkbox.dataset.hasSub === 'true') {
+                        const subOptions = this.querySelector('.sub-options');
+                        if (subOptions) {
+                            subOptions.style.display = checkbox.checked ? 'block' : 'none';
+                        }
+                    }
+                    
+                    // If unchecking, clear radio buttons
+                    if (!checkbox.checked) {
+                        const subRadios = this.querySelectorAll('.sub-options input[type="radio"]');
+                        subRadios.forEach(radio => radio.checked = false);
+                    }
+                });
+            });
+            
+            // Prevent double click issues on checkboxes
+            document.querySelectorAll('.service-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const serviceOption = this.closest('.service-option');
+                    serviceOption.classList.toggle('selected', this.checked);
+                    
+                    // Show/hide sub-options
+                    if (this.dataset.hasSub === 'true') {
+                        const subOptions = serviceOption.querySelector('.sub-options');
+                        if (subOptions) {
+                            subOptions.style.display = this.checked ? 'block' : 'none';
+                        }
+                    }
+                    
+                    // If unchecking, clear radio buttons
+                    if (!this.checked) {
+                        const subRadios = serviceOption.querySelectorAll('.sub-options input[type="radio"]');
+                        subRadios.forEach(radio => radio.checked = false);
+                    }
+                });
+            });
+            
+            // Prevent form elements in sub-options from triggering parent clicks
+            document.querySelectorAll('.sub-options textarea, .sub-options input').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+            
+            // Form validation before submit
+            document.getElementById('serviceRequestForm').addEventListener('submit', function(e) {
+                // Check if any service is selected
+                const anyServiceSelected = document.querySelectorAll('.service-checkbox:checked').length > 0;
+                if (!anyServiceSelected) {
+                    e.preventDefault();
+                    alert('Please select at least one service.');
+                    return;
+                }
+                
+                // Check if sub-options are selected when parent is selected
+                let valid = true;
+                document.querySelectorAll('.service-checkbox[data-has-sub="true"]:checked').forEach(checkbox => {
+                    const serviceOption = checkbox.closest('.service-option');
+                    const serviceValue = checkbox.value;
+                    
+                    // Determine which radio group to check
+                    let radioGroupName = '';
+                    if (serviceValue === 'Ceramic Coating') {
+                        radioGroupName = 'ceramic_coating_type';
+                    } else if (serviceValue === 'Paint Correction') {
+                        radioGroupName = 'paint_correction_type';
+                    } else if (serviceValue === 'Custom') {
+                        // For custom service, check if description is provided
+                        const description = document.getElementById('customServiceDescription').value.trim();
+                        if (!description) {
+                            valid = false;
+                            alert('Please provide a description for your custom service request.');
+                        }
+                        return;
+                    }
+                    
+                    if (radioGroupName) {
+                        const anyRadioSelected = serviceOption.querySelector(`input[name="${radioGroupName}"]:checked`);
+                        if (!anyRadioSelected) {
+                            valid = false;
+                            alert(`Please select a specific option for ${serviceValue}.`);
+                        }
+                    }
+                });
+                
+                if (!valid) {
+                    e.preventDefault();
+                }
             });
         });
     </script>

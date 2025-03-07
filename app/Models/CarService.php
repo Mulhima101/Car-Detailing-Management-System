@@ -20,13 +20,13 @@ class CarService extends Model
         'notes',
         'status',
         'start_date',
-        'completion_date'
+        'completion_date',
     ];
     
     protected $casts = [
         'services' => 'array',
         'start_date' => 'datetime',
-        'completion_date' => 'datetime'
+        'completion_date' => 'datetime',
     ];
     
     protected static function boot()

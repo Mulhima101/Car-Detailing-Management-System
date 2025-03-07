@@ -118,7 +118,7 @@
                                         </td>
                                         <td>
                                             @foreach($service->services as $serviceItem)
-                                                <span class="badge bg-secondary">{{ $serviceItem }}</span>
+                                                <span class="badge bg-secondary">{{ Str::before($serviceItem, ' - ') }}</span>
                                             @endforeach
                                         </td>
                                         <td>{{ $service->start_date->format('M d, Y') }}</td>
@@ -156,7 +156,7 @@
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <h6>Vehicle Information</h6>
-                                                                    <p><strong>Brand & Model:</strong> {{ $service->car_brand }} {{ $service->car_model }}</p>
+                                                                    <p><strong>Manufacturer & Model:</strong> {{ $service->car_brand }} {{ $service->car_model }}</p>
                                                                     <p><strong>License Plate:</strong> {{ $service->license_plate }}</p>
                                                                     <p><strong>Color:</strong> {{ $service->color ?? 'N/A' }}</p>
                                                                 </div>
@@ -166,12 +166,23 @@
                                                                 <div class="col-md-6">
                                                                     <h6>Service Details</h6>
                                                                     <p><strong>Services:</strong></p>
-                                                                    <ul>
+                                                                    <ul class="list-group">
                                                                         @foreach($service->services as $serviceItem)
-                                                                            <li>{{ $serviceItem }}</li>
+                                                                            @php
+                                                                                $mainService = Str::before($serviceItem, ' - ');
+                                                                                $subOption = Str::contains($serviceItem, ' - ') ? Str::after($serviceItem, ' - ') : null;
+                                                                            @endphp
+                                                                            <li class="list-group-item">
+                                                                                <strong>{{ $mainService }}</strong>
+                                                                                @if($subOption)
+                                                                                    <div class="text-muted mt-1">
+                                                                                        <small>Option: {{ $subOption }}</small>
+                                                                                    </div>
+                                                                                @endif
+                                                                            </li>
                                                                         @endforeach
                                                                     </ul>
-                                                                    <p><strong>Notes:</strong> {{ $service->notes ?? 'N/A' }}</p>
+                                                                    <p class="mt-3"><strong>Notes:</strong> {{ $service->notes ?? 'N/A' }}</p>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <h6>Status Information</h6>

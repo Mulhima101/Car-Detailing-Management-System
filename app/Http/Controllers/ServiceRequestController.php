@@ -16,6 +16,10 @@ class ServiceRequestController extends Controller
 
     public function store(Request $request)
     {
+        // Let's dump all the form data to see what's being received
+        // Comment this out after debugging
+        // dd($request->all());
+        
         // Validate the request
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
@@ -28,7 +32,26 @@ class ServiceRequestController extends Controller
             'color' => 'nullable|string|max:50',
             'services' => 'required|array',
             'notes' => 'nullable|string',
+            'ceramic_coating_type' => 'nullable|string',
+            'paint_correction_type' => 'nullable|string',
+            'custom_service_description' => 'nullable|string',
         ]);
+        
+        // Process the services with sub-options
+        $processedServices = $validated['services'];
+        
+        // Add sub-option details to the services
+        foreach ($processedServices as $key => $service) {
+            if ($service === 'Ceramic Coating' && isset($validated['ceramic_coating_type'])) {
+                $processedServices[$key] = $service . ' - ' . $validated['ceramic_coating_type'];
+            } 
+            else if ($service === 'Paint Correction' && isset($validated['paint_correction_type'])) {
+                $processedServices[$key] = $service . ' - ' . $validated['paint_correction_type'];
+            }
+            else if ($service === 'Custom' && isset($validated['custom_service_description'])) {
+                $processedServices[$key] = $service . ' - ' . $validated['custom_service_description'];
+            }
+        }
         
         DB::beginTransaction();
         
@@ -45,14 +68,17 @@ class ServiceRequestController extends Controller
             
             // Create the car service record
             $carService = new CarService([
-                'car_brand' => $validated['car_brand'],
+                'car_brand' => $validated['car_brand'], // Make sure this is being passed correctly
                 'car_model' => $validated['car_model'],
                 'license_plate' => $validated['license_plate'],
                 'color' => $validated['color'] ?? null,
-                'services' => $validated['services'],
+                'services' => $processedServices,
                 'notes' => $validated['notes'] ?? null,
                 'status' => 'pending',
             ]);
+            
+            // For debugging, you can dump the CarService object before saving
+            // dd($carService);
             
             $customer->carServices()->save($carService);
             
