@@ -67,6 +67,10 @@
             border-color: var(--autox-yellow);
             background-color: rgba(255, 206, 0, 0.1);
         }
+        .service-option.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         .service-option h5 {
             margin-bottom: 5px;
         }
@@ -386,6 +390,54 @@
     <script>
         // Script to handle service options
         document.addEventListener('DOMContentLoaded', function() {
+            // Get the Full Detail checkbox
+            const fullDetailCheckbox = document.getElementById('fullDetail');
+            const allServiceCheckboxes = document.querySelectorAll('.service-checkbox');
+            const serviceOptions = document.querySelectorAll('.service-option');
+            
+            // Function to toggle other services based on Full Detail selection
+            function toggleOtherServices() {
+                const isFullDetailChecked = fullDetailCheckbox.checked;
+                
+                // Loop through all service checkboxes
+                allServiceCheckboxes.forEach(checkbox => {
+                    // Skip the Full Detail checkbox itself
+                    if (checkbox.id !== 'fullDetail') {
+                        // Disable or enable based on Full Detail selection
+                        checkbox.disabled = isFullDetailChecked;
+                        
+                        const serviceOption = checkbox.closest('.service-option');
+                        
+                        // Add or remove the disabled class for styling
+                        if (isFullDetailChecked) {
+                            serviceOption.classList.add('disabled');
+                            // Uncheck the checkbox if Full Detail is selected
+                            checkbox.checked = false;
+                            serviceOption.classList.remove('selected');
+                            
+                            // Hide sub-options
+                            const subOptions = serviceOption.querySelector('.sub-options');
+                            if (subOptions) {
+                                subOptions.style.display = 'none';
+                                
+                                // Clear radio selections
+                                const radioInputs = subOptions.querySelectorAll('input[type="radio"]');
+                                radioInputs.forEach(radio => radio.checked = false);
+                                
+                                // Clear text inputs
+                                const textInputs = subOptions.querySelectorAll('textarea');
+                                textInputs.forEach(input => input.value = '');
+                            }
+                        } else {
+                            serviceOption.classList.remove('disabled');
+                        }
+                    }
+                });
+            }
+            
+            // Add event listener to Full Detail checkbox
+            fullDetailCheckbox.addEventListener('change', toggleOtherServices);
+            
             // Initialize options based on previous selection
             document.querySelectorAll('.service-checkbox').forEach(checkbox => {
                 const serviceOption = checkbox.closest('.service-option');
@@ -400,18 +452,32 @@
                 }
             });
             
+            // Run initially to set correct state based on form load state
+            toggleOtherServices();
+            
             // Handle click on service options
-            document.querySelectorAll('.service-option').forEach(option => {
+            serviceOptions.forEach(option => {
                 option.addEventListener('click', function(e) {
-                    // Don't trigger if clicking on form elements inside sub-options
-                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || 
-                        e.target.tagName === 'LABEL' || e.target.closest('.sub-options')) {
-                        return; // Let the form elements handle their own events
+                    // Get the checkbox
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    
+                    // If the option is disabled or clicking in sub-options, do nothing
+                    if (checkbox.disabled || 
+                        e.target.tagName === 'INPUT' || 
+                        e.target.tagName === 'TEXTAREA' || 
+                        e.target.tagName === 'LABEL' || 
+                        e.target.closest('.sub-options')) {
+                        return;
                     }
                     
-                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    // Toggle checkbox
                     checkbox.checked = !checkbox.checked;
                     this.classList.toggle('selected', checkbox.checked);
+                    
+                    // If this is Full Detail, update other checkboxes
+                    if (checkbox.id === 'fullDetail') {
+                        toggleOtherServices();
+                    }
                     
                     // Show/hide sub-options
                     if (checkbox.dataset.hasSub === 'true') {
@@ -430,11 +496,22 @@
             });
             
             // Prevent double click issues on checkboxes
-            document.querySelectorAll('.service-checkbox').forEach(checkbox => {
+            allServiceCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('click', function(e) {
                     e.stopPropagation();
+                    
+                    // Skip if disabled
+                    if (this.disabled) {
+                        return;
+                    }
+                    
                     const serviceOption = this.closest('.service-option');
                     serviceOption.classList.toggle('selected', this.checked);
+                    
+                    // If this is the Full Detail checkbox, toggle other services
+                    if (this.id === 'fullDetail') {
+                        toggleOtherServices();
+                    }
                     
                     // Show/hide sub-options
                     if (this.dataset.hasSub === 'true') {
