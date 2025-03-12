@@ -187,9 +187,25 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="licensePlate" class="form-label">License Plate</label>
-                        <input type="text" class="form-control" id="licensePlate" name="license_plate" value="{{ old('license_plate') }}" required>
+                        <label for="registrationNumber" class="form-label">Registration</label>
+                        <input type="text" class="form-control" id="registrationNumber" name="license_plate" value="{{ old('license_plate') }}" required>
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="registrationState" class="form-label">Registration State</label>
+                        <select class="form-select" id="registrationState" name="registration_state">
+                            <option value="" selected disabled>Select State/Territory</option>
+                            <option value="VIC" {{ old('registration_state') == 'VIC' ? 'selected' : '' }}>VIC</option>
+                            <option value="NSW" {{ old('registration_state') == 'NSW' ? 'selected' : '' }}>NSW</option>
+                            <option value="NT" {{ old('registration_state') == 'NT' ? 'selected' : '' }}>NT</option>
+                            <option value="ACT" {{ old('registration_state') == 'ACT' ? 'selected' : '' }}>ACT</option>
+                            <option value="QLD" {{ old('registration_state') == 'QLD' ? 'selected' : '' }}>QLD</option>
+                            <option value="SA" {{ old('registration_state') == 'SA' ? 'selected' : '' }}>SA</option>
+                            <option value="TAS" {{ old('registration_state') == 'TAS' ? 'selected' : '' }}>TAS</option>
+                            <option value="WA" {{ old('registration_state') == 'WA' ? 'selected' : '' }}>WA</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="color" class="form-label">Vehicle Color</label>
                         <input type="text" class="form-control" id="color" name="color" value="{{ old('color') }}">
