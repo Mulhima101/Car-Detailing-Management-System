@@ -11,14 +11,14 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+
     /**
      * Display the login view.
      */
     public function create(): View
     {
-        return view('auth.login');
+        return view('auth.custom-login');
     }
-
     /**
      * Handle an incoming authentication request.
      */
@@ -28,7 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Change the redirect to admin.dashboard since that's what we defined
+        return redirect()->intended(route('admin.dashboard', absolute: false));
     }
 
     /**

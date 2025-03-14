@@ -1,5 +1,3 @@
-// app/Models/Customer.php
-
 <?php
 
 namespace App\Models;

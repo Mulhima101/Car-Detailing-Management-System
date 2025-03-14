@@ -1,5 +1,3 @@
-// routes/web.php
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -11,6 +9,9 @@ use App\Http\Controllers\ProfileController;
 Route::get('/', function () {
     return redirect()->route('service.create');
 });
+
+// Define dashboard route
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/service/request', [ServiceRequestController::class, 'create'])->name('service.create');
 Route::post('/service/request', [ServiceRequestController::class, 'store'])->name('service.store');
@@ -31,7 +32,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/settings', function () { return view('admin.settings'); })->name('settings');
 });
 
-// Profile routes (this will be used in the settings page)
+// Profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
