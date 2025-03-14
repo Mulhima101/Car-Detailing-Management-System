@@ -1,9 +1,12 @@
+// app/Models/CarService.php
+
 <?php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\DatabaseNotification;
 
 class CarService extends Model
 {
@@ -21,6 +24,7 @@ class CarService extends Model
         'status',
         'start_date',
         'completion_date',
+        'registration_state',
     ];
     
     protected $casts = [
@@ -35,12 +39,21 @@ class CarService extends Model
         
         static::creating(function ($model) {
             $model->order_id = 'AX' . date('Ymd') . str_pad(random_int(1, 999), 3, '0', STR_PAD_LEFT);
-            $model->start_date = now();
+            
+            if (!$model->start_date && $model->status === 'in-progress') {
+                $model->start_date = now();
+            }
         });
     }
     
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+    
+    public function notifications()
+    {
+        return $this->morphMany(DatabaseNotification::class, 'notifiable')
+                    ->where('data->car_service_id', $this->id);
     }
 }

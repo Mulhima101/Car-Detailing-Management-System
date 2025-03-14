@@ -1,3 +1,5 @@
+/* public/css/autox.css */
+
 :root {
     /* Primary colors */
     --autox-yellow: #FFCE00;
@@ -52,31 +54,41 @@ body {
     margin-right: 10px;
 }
 
-.submit-btn {
+.btn-yellow {
     background-color: var(--autox-yellow);
     color: var(--autox-dark);
     font-weight: bold;
-    padding: 12px 30px;
+    padding: 8px 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s;
 }
 
-.submit-btn:hover {
+.btn-yellow:hover {
     background-color: var(--autox-yellow-dark);
+    color: var(--autox-dark);
 }
 
 .sidebar {
     background-color: var(--autox-dark);
     color: white;
-    height: 100vh;
-    position: fixed;
-    padding-top: 20px;
 }
 
-.sidebar .brand-yellow {
-    color: var(--autox-yellow);
+.sidebar .nav-link {
+    color: rgba(255,255,255,.75);
+    padding: 10px 20px;
+    margin-bottom: 5px;
+}
+
+.sidebar .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255,255,255,.1);
+}
+
+.sidebar .nav-link.active {
+    color: #000;
+    background-color: var(--autox-yellow);
 }
 
 .status-badge {

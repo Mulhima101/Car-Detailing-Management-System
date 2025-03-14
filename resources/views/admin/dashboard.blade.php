@@ -12,9 +12,36 @@
     <style>
         .sidebar {
             width: 250px;
+            height: 100vh;
+            position: fixed;
+            background-color: #212529;
+            color: white;
+            padding-top: 20px;
         }
         .main-content {
             margin-left: 250px;
+            padding: 20px;
+        }
+        .stat-card {
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            background-color: white;
+            height: 100%;
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--autox-yellow);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
         }
         @media (max-width: 768px) {
             .sidebar {
@@ -31,34 +58,41 @@
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="brand">
-            <h4><span class="brand-yellow">AutoX</span></h4>
-            <div>Admin Dashboard</div>
+        <div class="px-3 mb-4">
+            <h4 class="text-white mb-0">
+                <span class="text-white">Auto</span><span style="color: #FFDD00">X</span> 
+            </h4>
+            <p class="text-white-50 small">Admin Dashboard</p>
         </div>
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link active" href="{{ route('admin.dashboard') }}">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.customers') }}">
-                    <i class="fas fa-users"></i> Customers
+                    <i class="fas fa-users me-2"></i> Customers
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.services') }}">
-                    <i class="fas fa-car"></i> All Services
+                    <i class="fas fa-car me-2"></i> All Services
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.completed-services') }}">
+                    <i class="fas fa-check-circle me-2"></i> Completed Services
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.settings') }}">
-                    <i class="fas fa-cog"></i> Settings
+                    <i class="fas fa-cog me-2"></i> Settings
                 </a>
             </li>
             <li class="nav-item mt-5">
                 <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    <i class="fas fa-sign-out-alt me-2"></i> Logout
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
@@ -69,11 +103,51 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center page-title">
-            <h2>In-Progress Services</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dashboard</h2>
             <a href="{{ route('service.create') }}" class="btn btn-yellow">
-                <i class="fas fa-plus-circle"></i> New Service Request
+                <i class="fas fa-plus-circle me-1"></i> New Service Request
             </a>
+        </div>
+        
+        <!-- Dashboard Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="stat-number">{{ $stats['total_services'] }}</div>
+                    <div class="stat-label">Total Services</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-number">{{ $stats['in_progress_services'] }}</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-number">{{ $stats['completed_services'] }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">{{ $stats['total_customers'] }}</div>
+                    <div class="stat-label">Customers</div>
+                </div>
+            </div>
         </div>
 
         <!-- Alerts for success/error messages -->
@@ -88,6 +162,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Current In-Progress Services</h5>
+                <a href="{{ route('admin.services') }}" class="btn btn-sm btn-outline-primary">View All Services</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -118,10 +193,10 @@
                                         </td>
                                         <td>
                                             @foreach($service->services as $serviceItem)
-                                                <span class="badge bg-secondary">{{ Str::before($serviceItem, ' - ') }}</span>
+                                                <span class="badge bg-secondary">{{ is_string($serviceItem) && strpos($serviceItem, ' - ') !== false ? substr($serviceItem, 0, strpos($serviceItem, ' - ')) : $serviceItem }}</span>
                                             @endforeach
                                         </td>
-                                        <td>{{ $service->start_date->format('M d, Y') }}</td>
+                                        <td>{{ $service->start_date ? $service->start_date->format('M d, Y') : 'N/A' }}</td>
                                         <td>
                                             <span class="status-badge status-{{ $service->status }}">
                                                 {{ ucfirst($service->status) }}
@@ -156,8 +231,8 @@
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <h6>Vehicle Information</h6>
-                                                                    <p><strong>Manufacturer & Model:</strong> {{ $service->car_brand }} {{ $service->car_model }}</p>
-                                                                    <p><strong>License Plate:</strong> {{ $service->license_plate }}</p>
+                                                                    <p><strong>Brand & Model:</strong> {{ $service->car_brand }} {{ $service->car_model }}</p>
+                                                                    <p><strong>Registration:</strong> {{ $service->license_plate }} {{ $service->registration_state ? '('.$service->registration_state.')' : '' }}</p>
                                                                     <p><strong>Color:</strong> {{ $service->color ?? 'N/A' }}</p>
                                                                 </div>
                                                             </div>
@@ -169,8 +244,12 @@
                                                                     <ul class="list-group">
                                                                         @foreach($service->services as $serviceItem)
                                                                             @php
-                                                                                $mainService = Str::before($serviceItem, ' - ');
-                                                                                $subOption = Str::contains($serviceItem, ' - ') ? Str::after($serviceItem, ' - ') : null;
+                                                                                $mainService = is_string($serviceItem) && strpos($serviceItem, ' - ') !== false 
+                                                                                    ? substr($serviceItem, 0, strpos($serviceItem, ' - ')) 
+                                                                                    : $serviceItem;
+                                                                                $subOption = is_string($serviceItem) && strpos($serviceItem, ' - ') !== false 
+                                                                                    ? substr($serviceItem, strpos($serviceItem, ' - ') + 3) 
+                                                                                    : null;
                                                                             @endphp
                                                                             <li class="list-group-item">
                                                                                 <strong>{{ $mainService }}</strong>
@@ -187,7 +266,7 @@
                                                                 <div class="col-md-6">
                                                                     <h6>Status Information</h6>
                                                                     <p><strong>Current Status:</strong> <span class="status-badge status-{{ $service->status }}">{{ ucfirst($service->status) }}</span></p>
-                                                                    <p><strong>Started:</strong> {{ $service->start_date->format('M d, Y, h:i A') }}</p>
+                                                                    <p><strong>Started:</strong> {{ $service->start_date ? $service->start_date->format('M d, Y, h:i A') : 'Not started' }}</p>
                                                                     @if($service->completion_date)
                                                                         <p><strong>Completed:</strong> {{ $service->completion_date->format('M d, Y, h:i A') }}</p>
                                                                     @endif
@@ -222,7 +301,7 @@
                                                                     </select>
                                                                 </div>
                                                                 <div class="alert alert-info">
-                                                                    <small>Note: Marking as "Completed" will automatically set the completion date to the current time.</small>
+                                                                    <small><i class="fas fa-info-circle me-1"></i> Marking as "Completed" will automatically set the completion date to the current time.</small>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -238,7 +317,9 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="7" class="text-center">No in-progress services found.</td>
+                                    <td colspan="7" class="text-center py-4">
+                                        <p class="mb-0 text-muted">No in-progress services found.</p>
+                                    </td>
                                 </tr>
                             @endif
                         </tbody>

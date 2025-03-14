@@ -14,6 +14,14 @@ class ServiceRequestController extends Controller
         return view('service_request_form');
     }
 
+    // app/Http/Controllers/ServiceRequestController.php (add this method)
+
+    public function status($id)
+    {
+        $carService = CarService::with('customer')->findOrFail($id);
+        
+        return view('service_status', compact('carService'));
+    }
     public function store(Request $request)
     {
         // Let's dump all the form data to see what's being received
