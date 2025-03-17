@@ -56,7 +56,7 @@ class DashboardController extends Controller
         
         $services = $query->orderBy('created_at', 'desc')->get();
         
-        return view('admin.all_services', compact('services'));
+        return view('admin.all-services', compact('services'));
     }
     
     public function completedServices()
@@ -66,7 +66,7 @@ class DashboardController extends Controller
             ->orderBy('completion_date', 'desc')
             ->get();
         
-        return view('admin.completed_services', compact('completedServices'));
+        return view('admin.completed-services', compact('completedServices'));
     }
     
     public function customers()
