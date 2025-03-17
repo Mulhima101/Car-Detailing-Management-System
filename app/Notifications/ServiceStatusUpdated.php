@@ -1,5 +1,3 @@
-// app/Notifications/ServiceStatusUpdated.php
-
 <?php
 
 namespace App\Notifications;

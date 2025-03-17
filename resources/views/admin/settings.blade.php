@@ -1,5 +1,3 @@
-// resources/views/admin/settings.blade.php
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,8 +155,6 @@
                         <form action="#" method="POST">
                             @csrf
                             <div class="form-check form-switch mb-3">
-                            // resources/views/admin/settings.blade.php (continued)
-
                                     <input class="form-check-input" type="checkbox" id="statusUpdates" name="notification_status_updates" checked>
                                     <label class="form-check-label" for="statusUpdates">Service Status Updates</label>
                                     </div>

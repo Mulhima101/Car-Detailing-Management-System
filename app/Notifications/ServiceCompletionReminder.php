@@ -1,5 +1,3 @@
-// app/Notifications/ServiceCompletionReminder.php
-
 <?php
 
 namespace App\Notifications;

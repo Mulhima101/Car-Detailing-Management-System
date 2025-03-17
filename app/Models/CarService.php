@@ -13,7 +13,7 @@ class CarService extends Model
     protected $fillable = [
         'customer_id',
         'order_id',
-        'car_brand',    // This field name
+        'car_brand',    // This field is present
         'car_model',
         'license_plate',
         // ...
