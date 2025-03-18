@@ -187,8 +187,8 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="brand">
-            <h4>Auto<span>X</span></h4>
-            <small>Admin Dashboard</small>
+        <img src="{{ asset('images/autox-logo.png') }}" alt="AutoX" class="img-fluid" style="max-height: 50px;">
+        <p class="text-white-50 small">Admin Dashboard</p>
         </div>
         
         <ul class="nav flex-column mt-3">

@@ -65,18 +65,15 @@
     </style>
 </head>
 <body>
-    <div class="header">
+        <div class="header">
         <div class="container py-5">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h1 class="text-white mb-0">
-                        <span class="text-white">Auto</span><span style="color: #FFDD00">X</span> 
-                        <span class="text-white">Studio</span>
-                    </h1>
-                    <p class="text-white-50 mt-2">Premium Car Detailing Services</p>
-                </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <img src="{{ asset('images/autox-logo.png') }}" alt="AutoX Studio" class="img-fluid" style="max-height: 80px;">
+                <p class="text-white-50 mt-2">Premium Car Detailing Services</p>
             </div>
         </div>
+    </div>
     </div>
 
     <div class="container py-5">

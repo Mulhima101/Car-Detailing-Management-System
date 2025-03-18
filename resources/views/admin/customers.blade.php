@@ -38,9 +38,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="px-3 mb-4">
-            <h4 class="text-white mb-0">
-                <span class="text-white">Auto</span><span style="color: #FFDD00">X</span> 
-            </h4>
+        <img src="{{ asset('images/autox-logo.png') }}" alt="AutoX" class="img-fluid" style="max-height: 50px;">
             <p class="text-white-50 small">Admin Dashboard</p>
         </div>
         <ul class="nav flex-column">

@@ -38,7 +38,7 @@ class ServiceRequestController extends Controller
             'car_model' => 'required|string|max:100',
             'license_plate' => 'required|string|max:20',
             'color' => 'nullable|string|max:50',
-            'services' => 'required|array',
+            'services' => 'required|array',  // Make sure this line exists
             'notes' => 'nullable|string',
             'ceramic_coating_type' => 'nullable|string',
             'paint_correction_type' => 'nullable|string',
@@ -46,7 +46,7 @@ class ServiceRequestController extends Controller
         ]);
         
         // Process the services with sub-options
-        $processedServices = $validated['services'];
+        $processedServices = $validated['services']; // Make sure this variable is defined
         
         // Add sub-option details to the services
         foreach ($processedServices as $key => $service) {
@@ -76,17 +76,14 @@ class ServiceRequestController extends Controller
             
             // Create the car service record
             $carService = new CarService([
-                'car_brand' => $validated['car_brand'], // Make sure this is being passed correctly
+                'car_brand' => $validated['car_brand'],
                 'car_model' => $validated['car_model'],
                 'license_plate' => $validated['license_plate'],
                 'color' => $validated['color'] ?? null,
-                'services' => $processedServices,
+                'services' => $processedServices, // Make sure this line is present and not commented out
                 'notes' => $validated['notes'] ?? null,
                 'status' => 'pending',
             ]);
-            
-            // For debugging, you can dump the CarService object before saving
-            // dd($carService);
             
             $customer->carServices()->save($carService);
             

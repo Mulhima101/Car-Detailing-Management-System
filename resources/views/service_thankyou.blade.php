@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="header text-center">
-        <h1><span class="brand-yellow">AutoX</span> Studio</h1>
+    <img src="{{ asset('images/autox-logo.png') }}" alt="AutoX Studio" class="img-fluid" style="max-height: 80px;">
         <p class="mt-2">Premium Car Detailing Services</p>
     </div>
 
