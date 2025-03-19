@@ -7,7 +7,7 @@ use App\Http\Controllers\ProfileController;
 
 // Public routes
 Route::get('/', function () {
-    return redirect()->route('service.create');
+    return redirect()->route('login');
 });
 
 // Define dashboard route

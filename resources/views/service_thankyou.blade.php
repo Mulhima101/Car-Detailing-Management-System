@@ -7,10 +7,23 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/autox.css') }}" rel="stylesheet">
+    <style>
+        .brand-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .brand-x {
+            color: #FFCE00;
+        }
+    </style>
 </head>
 <body>
     <div class="header text-center">
-    <img src="{{ asset('images/autox-logo.png') }}" alt="AutoX Studio" class="img-fluid" style="max-height: 80px;">
+        <div class="brand-logo">
+            <img src="{{ asset('images/autox-logo.png') }}" alt="AutoX Service">
+        </div>
         <p class="mt-2">Premium Car Detailing Services</p>
     </div>
 
@@ -36,7 +49,12 @@
                         <p>We'll contact you shortly to confirm your appointment details.</p>
                         
                         <div class="mt-4">
-                            <a href="{{ route('service.create') }}" class="btn btn-outline-dark">Return to Service Form</a>
+                            @if(auth()->check())
+                                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+                            @else
+                                <a href="{{ route('service.create') }}" class="btn btn-outline-dark">Return to Service Form</a>
+                                <a href="{{ route('login') }}" class="btn btn-primary ml-2">Login to Dashboard</a>
+                            @endif
                         </div>
                     </div>
                 </div>

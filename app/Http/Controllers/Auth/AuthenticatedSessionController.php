@@ -11,7 +11,6 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-
     /**
      * Display the login view.
      */
@@ -19,6 +18,7 @@ class AuthenticatedSessionController extends Controller
     {
         return view('auth.custom-login');
     }
+    
     /**
      * Handle an incoming authentication request.
      */

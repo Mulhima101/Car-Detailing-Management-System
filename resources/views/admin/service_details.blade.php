@@ -284,9 +284,7 @@
                             <a href="{{ route('service.create') }}?customer_id={{ $service->customer->id }}" class="btn btn-outline-warning btn-sm">
                                 <i class="fas fa-plus-circle me-1"></i> New Service for This Customer
                             </a>
-                            <button type="button" class="btn btn-outline-secondary btn-sm">
-                                <i class="fas fa-print me-1"></i> Print Service Details
-                            </button>
+                            <!-- Print Service Details button removed -->
                         </div>
                     </div>
                 </div>

@@ -93,7 +93,7 @@
         <div class="brand-logo">
             <img src="{{ asset('images/autox-logo.png') }}" alt="AutoX Service">
         </div>
-        <p class="subtitle">Service Management System</p>
+        <p class="subtitle">Management System</p>
         
         @if (session('status'))
             <div class="alert alert-success mb-3">

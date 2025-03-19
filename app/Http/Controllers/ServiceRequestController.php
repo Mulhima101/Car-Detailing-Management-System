@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\CarService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ServiceRequestController extends Controller
 {
@@ -14,22 +15,17 @@ class ServiceRequestController extends Controller
         return view('service_request_form');
     }
 
-    // app/Http/Controllers/ServiceRequestController.php (add this method)
-
     public function status($id)
     {
         $carService = CarService::with('customer')->findOrFail($id);
         
         return view('service_status', compact('carService'));
     }
+    
     public function store(Request $request)
     {
-        // Let's dump all the form data to see what's being received
-        // Comment this out after debugging
-        // dd($request->all());
-        
         // Validate the request
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'customer_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
@@ -38,25 +34,31 @@ class ServiceRequestController extends Controller
             'car_model' => 'required|string|max:100',
             'license_plate' => 'required|string|max:20',
             'color' => 'nullable|string|max:50',
-            'services' => 'required|array',  // Make sure this line exists
+            'services' => 'required|array',
             'notes' => 'nullable|string',
             'ceramic_coating_type' => 'nullable|string',
             'paint_correction_type' => 'nullable|string',
             'custom_service_description' => 'nullable|string',
         ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $validated = $validator->validated();
         
         // Process the services with sub-options
-        $processedServices = $validated['services']; // Make sure this variable is defined
+        $processedServices = $validated['services'];
         
         // Add sub-option details to the services
         foreach ($processedServices as $key => $service) {
             if ($service === 'Ceramic Coating' && isset($validated['ceramic_coating_type'])) {
                 $processedServices[$key] = $service . ' - ' . $validated['ceramic_coating_type'];
             } 
-            else if ($service === 'Paint Correction' && isset($validated['paint_correction_type'])) {
+            elseif ($service === 'Paint Correction' && isset($validated['paint_correction_type'])) {
                 $processedServices[$key] = $service . ' - ' . $validated['paint_correction_type'];
             }
-            else if ($service === 'Custom' && isset($validated['custom_service_description'])) {
+            elseif ($service === 'Custom' && isset($validated['custom_service_description'])) {
                 $processedServices[$key] = $service . ' - ' . $validated['custom_service_description'];
             }
         }
@@ -80,7 +82,7 @@ class ServiceRequestController extends Controller
                 'car_model' => $validated['car_model'],
                 'license_plate' => $validated['license_plate'],
                 'color' => $validated['color'] ?? null,
-                'services' => $processedServices, // Make sure this line is present and not commented out
+                'services' => $processedServices,
                 'notes' => $validated['notes'] ?? null,
                 'status' => 'pending',
             ]);
@@ -101,7 +103,6 @@ class ServiceRequestController extends Controller
     public function thankYou($id)
     {
         $carService = CarService::with('customer')->findOrFail($id);
-        
         return view('service_thankyou', compact('carService'));
     }
 }
