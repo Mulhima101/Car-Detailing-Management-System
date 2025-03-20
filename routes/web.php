@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\ProfileController;
 
 // Public routes
@@ -29,7 +30,16 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/customers', [DashboardController::class, 'customers'])->name('customers');
     Route::get('/service/{id}', [DashboardController::class, 'viewServiceDetails'])->name('service.details');
     Route::patch('/service/{id}/status', [DashboardController::class, 'updateStatus'])->name('service.update-status');
-    Route::get('/settings', function () { return view('admin.settings'); })->name('settings');
+    
+    // Settings routes
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::post('/profile', [SettingsController::class, 'updateProfile'])->name('profile');
+        Route::post('/password', [SettingsController::class, 'updatePassword'])->name('password');
+        Route::post('/notifications', [SettingsController::class, 'updateNotifications'])->name('notifications');
+        Route::post('/system', [SettingsController::class, 'updateSystem'])->name('system');
+        Route::post('/email-templates', [SettingsController::class, 'updateEmailTemplates'])->name('email-templates');
+    });
 });
 
 // Profile routes

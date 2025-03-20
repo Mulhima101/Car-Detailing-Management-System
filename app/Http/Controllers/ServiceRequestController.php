@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\CarService;
+use App\Models\User;
+use App\Notifications\AdminServiceAlert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -88,6 +90,12 @@ class ServiceRequestController extends Controller
             ]);
             
             $customer->carServices()->save($carService);
+            
+            // Notify admin about new service request
+            $admins = User::where('is_admin', true)->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new AdminServiceAlert($carService, 'new_request'));
+            }
             
             DB::commit();
             

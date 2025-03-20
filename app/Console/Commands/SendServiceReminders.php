@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\CarService;
-use Carbon\Carbon;
+use App\Models\User;
+use App\Notifications\AdminServiceAlert;
 use App\Notifications\ServiceCompletionReminder;
+use Carbon\Carbon;
 
 class SendServiceReminders extends Command
 {
@@ -28,8 +30,11 @@ class SendServiceReminders extends Command
      */
     public function handle()
     {
-        $cutoffDate = Carbon::now()->subDays(3);
+        // Get reminder days from settings or use default
+        $reminderDays = config('autox.reminder_days', 3);
+        $cutoffDate = Carbon::now()->subDays($reminderDays);
         
+        // Get overdue services
         $services = CarService::with('customer')
             ->where('status', 'in-progress')
             ->where('start_date', '<=', $cutoffDate)
@@ -38,14 +43,27 @@ class SendServiceReminders extends Command
             })
             ->get();
         
-        $count = 0;
+        $customerCount = 0;
+        $adminCount = 0;
+        
         foreach ($services as $service) {
+            // Send notification to customer
             if ($service->customer && $service->customer->email) {
                 $service->customer->notify(new ServiceCompletionReminder($service));
-                $count++;
+                $customerCount++;
+            }
+            
+            // Send notification to admin for services older than 5 days
+            if ($service->start_date && $service->start_date->diffInDays(now()) >= 5) {
+                $admins = User::where('is_admin', true)->get();
+                foreach ($admins as $admin) {
+                    $admin->notify(new AdminServiceAlert($service, 'overdue'));
+                    $adminCount++;
+                }
             }
         }
         
-        $this->info("Sent {$count} service reminders.");
+        $this->info("Sent {$customerCount} customer service reminders.");
+        $this->info("Sent {$adminCount} admin overdue alerts.");
     }
 }
