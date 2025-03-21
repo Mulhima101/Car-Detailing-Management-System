@@ -63,7 +63,7 @@
                         <a class="nav-link" href="#services">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('service.form') }}">Book Service</a>
+                        <a class="nav-link" href="{{ route('service.create') }}">Book Service</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">Contact</a>
@@ -78,7 +78,7 @@
         <div class="container text-center">
             <h1 class="display-4">Premium Car Detailing Services</h1>
             <p class="lead">Experience the ultimate car care with AutoX Studio</p>
-            <a href="{{ route('service.form') }}" class="btn btn-autox btn-lg mt-3">Book a Service</a>
+            <a href="{{ route('service.create') }}" class="btn btn-autox btn-lg mt-3">Book a Service</a>
         </div>
     </section>
 
@@ -113,7 +113,7 @@
                             <div class="service-icon mb-3">✨</div>
                             <h5 class="card-title">Ceramic Coating</h5>
                             <p class="card-text">Premium coating that provides superior protection against environmental contaminants.</p>
-                            <a href="{{ route('service.form') }}" class="btn btn-dark mt-3">Book Now</a>
+                            <a href="{{ route('service.create') }}" class="btn btn-dark mt-3">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -158,7 +158,7 @@
     <section class="py-5 bg-autox-yellow">
         <div class="container text-center">
             <h2 class="mb-4">Ready to give your car the care it deserves?</h2>
-            <a href="{{ route('service.form') }}" class="btn btn-dark btn-lg px-5">Book Your Service Today</a>
+            <a href="{{ route('service.create') }}" class="btn btn-dark btn-lg px-5">Book Your Service Today</a>
         </div>
     </section>
 

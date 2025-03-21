@@ -11,9 +11,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Define dashboard route
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+// Service request public routes
 Route::get('/service/request', [ServiceRequestController::class, 'create'])->name('service.create');
 Route::post('/service/request', [ServiceRequestController::class, 'store'])->name('service.store');
 Route::get('/service/thankyou/{id}', [ServiceRequestController::class, 'thankYou'])->name('service.thankyou');
@@ -24,6 +22,7 @@ require __DIR__.'/auth.php';
 
 // Admin routes (protected by authentication)
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/services', [DashboardController::class, 'allServices'])->name('services');
     Route::get('/completed-services', [DashboardController::class, 'completedServices'])->name('completed-services');
@@ -32,14 +31,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::patch('/service/{id}/status', [DashboardController::class, 'updateStatus'])->name('service.update-status');
     
     // Settings routes
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', [SettingsController::class, 'index'])->name('index');
-        Route::post('/profile', [SettingsController::class, 'updateProfile'])->name('profile');
-        Route::post('/password', [SettingsController::class, 'updatePassword'])->name('password');
-        Route::post('/notifications', [SettingsController::class, 'updateNotifications'])->name('notifications');
-        Route::post('/system', [SettingsController::class, 'updateSystem'])->name('system');
-        Route::post('/email-templates', [SettingsController::class, 'updateEmailTemplates'])->name('email-templates');
-    });
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
+    Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/notifications', [SettingsController::class, 'updateNotifications'])->name('settings.notifications');
+    Route::post('/settings/system', [SettingsController::class, 'updateSystem'])->name('settings.system');
+    Route::post('/settings/email-templates', [SettingsController::class, 'updateEmailTemplates'])->name('settings.email-templates');
 });
 
 // Profile routes

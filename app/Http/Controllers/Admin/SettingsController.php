@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class SettingsController extends Controller
 {
@@ -26,11 +27,16 @@ class SettingsController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
         ]);
         
-        // Use the fill and save methods instead of update
-        $user->fill($validated);
-        $user->save();
+        // Direct update using query builder to avoid model method issues
+        DB::table('users')
+            ->where('id', $user->id)
+            ->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'updated_at' => now()
+            ]);
         
-        return redirect()->route('admin.settings.index')->with('success', 'Profile updated successfully.');
+        return redirect()->route('admin.settings')->with('success', 'Profile updated successfully.');
     }
     
     public function updatePassword(Request $request)
@@ -42,11 +48,15 @@ class SettingsController extends Controller
         
         $user = Auth::user();
         
-        // Set the password and save manually
-        $user->password = Hash::make($validated['password']);
-        $user->save();
+        // Direct update using query builder
+        DB::table('users')
+            ->where('id', $user->id)
+            ->update([
+                'password' => Hash::make($validated['password']),
+                'updated_at' => now()
+            ]);
         
-        return redirect()->route('admin.settings.index')->with('success', 'Password changed successfully.');
+        return redirect()->route('admin.settings')->with('success', 'Password changed successfully.');
     }
     
     public function updateNotifications(Request $request)
@@ -58,20 +68,26 @@ class SettingsController extends Controller
         ];
         
         foreach ($settings as $key => $value) {
-            $setting = Setting::where('key', $key)->first();
+            // Check if setting exists
+            $exists = DB::table('settings')->where('key', $key)->exists();
             
-            if ($setting) {
-                $setting->value = $value;
-                $setting->save();
+            if ($exists) {
+                // Update
+                DB::table('settings')
+                    ->where('key', $key)
+                    ->update(['value' => $value, 'updated_at' => now()]);
             } else {
-                $setting = new Setting();
-                $setting->key = $key;
-                $setting->value = $value;
-                $setting->save();
+                // Insert
+                DB::table('settings')->insert([
+                    'key' => $key,
+                    'value' => $value,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
             }
         }
         
-        return redirect()->route('admin.settings.index')->with('success', 'Notification settings updated successfully.');
+        return redirect()->route('admin.settings')->with('success', 'Notification settings updated successfully.');
     }
     
     public function updateSystem(Request $request)
@@ -84,23 +100,29 @@ class SettingsController extends Controller
         ]);
         
         foreach ($validated as $key => $value) {
-            $setting = Setting::where('key', $key)->first();
+            // Check if setting exists
+            $exists = DB::table('settings')->where('key', $key)->exists();
             
-            if ($setting) {
-                $setting->value = $value;
-                $setting->save();
+            if ($exists) {
+                // Update
+                DB::table('settings')
+                    ->where('key', $key)
+                    ->update(['value' => $value, 'updated_at' => now()]);
             } else {
-                $setting = new Setting();
-                $setting->key = $key;
-                $setting->value = $value;
-                $setting->save();
+                // Insert
+                DB::table('settings')->insert([
+                    'key' => $key,
+                    'value' => $value,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
             }
         }
         
         // Update config values at runtime
         config(['autox.reminder_days' => $validated['reminder_days']]);
         
-        return redirect()->route('admin.settings.index')->with('success', 'System settings updated successfully.');
+        return redirect()->route('admin.settings')->with('success', 'System settings updated successfully.');
     }
     
     public function updateEmailTemplates(Request $request)
@@ -110,33 +132,41 @@ class SettingsController extends Controller
         $template = $request->input('template');
         
         if ($templateType) {
-            // Update or create subject setting
-            $subjectSetting = Setting::where('key', 'email_' . $templateType . '_subject')->first();
+            // Subject setting - check and update/insert
+            $subjectKey = 'email_' . $templateType . '_subject';
+            $exists = DB::table('settings')->where('key', $subjectKey)->exists();
             
-            if ($subjectSetting) {
-                $subjectSetting->value = $subject;
-                $subjectSetting->save();
+            if ($exists) {
+                DB::table('settings')
+                    ->where('key', $subjectKey)
+                    ->update(['value' => $subject, 'updated_at' => now()]);
             } else {
-                $subjectSetting = new Setting();
-                $subjectSetting->key = 'email_' . $templateType . '_subject';
-                $subjectSetting->value = $subject;
-                $subjectSetting->save();
+                DB::table('settings')->insert([
+                    'key' => $subjectKey,
+                    'value' => $subject,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
             }
             
-            // Update or create template setting
-            $templateSetting = Setting::where('key', 'email_' . $templateType . '_template')->first();
+            // Template setting - check and update/insert
+            $templateKey = 'email_' . $templateType . '_template';
+            $exists = DB::table('settings')->where('key', $templateKey)->exists();
             
-            if ($templateSetting) {
-                $templateSetting->value = $template;
-                $templateSetting->save();
+            if ($exists) {
+                DB::table('settings')
+                    ->where('key', $templateKey)
+                    ->update(['value' => $template, 'updated_at' => now()]);
             } else {
-                $templateSetting = new Setting();
-                $templateSetting->key = 'email_' . $templateType . '_template';
-                $templateSetting->value = $template;
-                $templateSetting->save();
+                DB::table('settings')->insert([
+                    'key' => $templateKey,
+                    'value' => $template,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
             }
         }
         
-        return redirect()->route('admin.settings.index')->with('success', 'Email template updated successfully.');
+        return redirect()->route('admin.settings')->with('success', 'Email template updated successfully.');
     }
 }

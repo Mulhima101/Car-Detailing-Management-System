@@ -125,7 +125,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="companyEmail" class="form-label">Company Email</label>
-                        <input type="email" class="form-control" id="companyEmail" name="company_email" value="{{ $settings['company_email'] ?? 'info@autoxstudio.com' }}">
+                        <input type="email" class="form-control" id="companyEmail" name="company_email" value="{{ $settings['company_email'] ?? 'info@autoxstudio.com.au' }}">
                         @error('company_email')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
@@ -190,7 +190,7 @@
                                 <textarea class="form-control" id="statusTemplate" name="template" rows="10">{{ $settings['email_service_status_template'] ?? "Hello {customer_name},\n\nYour service status has been updated.\n\nService Details:\nOrder ID: {order_id}\nVehicle: {car_brand} {car_model}\nStatus: {status}\n\nThank you for choosing AutoX Studio!" }}</textarea>
                             </div>
                             <div class="text-muted mb-3">
-                                <strong>Available variables:</strong> {customer_name}, {order_id}, {car_brand}, {car_model}, {status}
+                                <strong>Available variables:</strong> {customer_name}, {order_id}, {car_brand}, {car_model}, {status}, {status_message}
                             </div>
                             <button type="submit" class="btn btn-primary">Save Template</button>
                         </form>
@@ -209,7 +209,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="reminderTemplate" class="form-label">Email Template</label>
-                                <textarea class="form-control" id="reminderTemplate" name="template" rows="10">{{ $settings['email_service_reminder_template'] ?? "Hello {customer_name},\n\nWe wanted to let you know that your vehicle is scheduled to be ready soon.\n\nService Details:\nOrder ID: {order_id}\nVehicle: {car_brand} {car_model}\nStatus: {status}\n\nThank you for choosing AutoX Studio!" }}</textarea>
+                                <textarea class="form-control" id="reminderTemplate" name="template" rows="10">{{ $settings['email_service_reminder_template'] ?? "Hello {customer_name},\n\nWe wanted to let you know that your vehicle has been in our service center for a few days. We're working to complete your service as soon as possible.\n\nService Details:\nOrder ID: {order_id}\nVehicle: {car_brand} {car_model}\nStatus: {status}\nStarted: {start_date}\n\nThank you for your patience and for choosing AutoX Studio!" }}</textarea>
                             </div>
                             <div class="text-muted mb-3">
                                 <strong>Available variables:</strong> {customer_name}, {order_id}, {car_brand}, {car_model}, {status}, {start_date}

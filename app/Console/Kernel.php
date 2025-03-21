@@ -12,8 +12,18 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Run reminders every day at 9:00 AM
         $schedule->command('autox:send-reminders')->dailyAt('09:00');
+        
+        // You could also add a log maintenance command to prevent logs from growing too large
+        $schedule->command('log:clear')->weekly();
+        
+        // Queue worker check - ensure queue is being processed
+        $schedule->command('queue:restart')->hourly();
+        
+        // Process the queue if using database driver
+        $schedule->command('queue:work --stop-when-empty')->everyMinute()
+            ->withoutOverlapping();
     }
 
     /**
